@@ -12,7 +12,7 @@ def main():
     st.title("Image to PDF Converter")
 
     # File upload
-    uploaded_files = st.file_uploader("Upload Images", type=["jpg", "jpeg", "png"], accept_multiple_files=True)
+    uploaded_files = st.file_uploader("Upload Images", type=["jpg", "jpeg", "png", "heic"], accept_multiple_files=True)
 
     # Output filename input
     output_filename = st.text_input("Output Filename", value="converted.pdf")
