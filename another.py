@@ -5,7 +5,7 @@ import os
 def convert_images_to_pdf(images, output_filename):
     """Converts a list of images to a PDF file."""
     with open(output_filename, "wb") as f:
-        f.write(img2pdf.convert(images))
+        f.write(img2pdf.convert(images, color=True))
 
 def main():
     """Main function of the Streamlit app."""
