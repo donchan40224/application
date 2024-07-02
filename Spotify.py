@@ -52,8 +52,21 @@ def app():
         # Get the track ID(s)
         result = get_id(token, track_name, artist_name)
 
-        # Display the result
-        st.write(result)
+        # Extract the track IDs from the result
+        track_ids = []
+        try:
+            for item in result["tracks"]["items"]:
+                track_ids.append(item["id"])
+        except (KeyError, TypeError):
+            st.write("No tracks found.")
+
+        # Display the track IDs
+        if track_ids:
+            st.write("Track IDs:")
+            for track_id in track_ids:
+                st.write(f"- {track_id}")
+        else:
+            st.write("No tracks found.")
 
 if __name__ == "__main__":
     app()
