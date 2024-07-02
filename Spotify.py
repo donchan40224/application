@@ -33,6 +33,7 @@ def get_id(token, track_name, artist_name):
     query_url = url+query
     result = get(query_url,headers=headers)
     json_result = json.loads(result.content)
+    print(json_result)  # Add this line to print the API response
     return json_result
 
 import streamlit as st
