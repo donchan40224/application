@@ -37,17 +37,10 @@ def get_track_info(token, track_name, artist_name):
     json_result = json.loads(result.content)
     return json_result
 
-def get_artist(token,artist_id):
-    url=f"https://api.spotify.com/v1/artists/{artist_id}"
+def get_features(token, tracks_id):
     headers = get_auth_header(token)
-    result = get(url,headers=headers)
-    json_result = json.loads(result.content)
-    return json_result
-
-def get_features(token,songs_id):
-    url=f"https://api.spotify.com/v1/audio-features?ids={songs_id}"
-    headers = get_auth_header(token)
-    result = get(url,headers=headers)
+    url = f"https://api.spotify.com/v1/audio-features?ids={tracks_id}"
+    result = get(url, headers=headers)
     json_result = json.loads(result.content)
     return json_result
 
@@ -88,17 +81,6 @@ def app():
                 "artist_id": track_info[i]["artists"][0]["id"]
             }
 
-            artist_info = get_artist(token, data["artist_id"])
-            data["artist_popularity"] = artist_info["popularity"]
-
-            if len(artist_info["genres"]) == 1:
-                data["artist_genres"] = artist_info["genres"][0]
-            elif len(artist_info["genres"]) > 1:
-                genres = artist_info["genres"]
-                data["artist_genres"] = "|".join(genres)
-            else:
-                data["artist_genres"] = None
-
             if len(track_info[i]["artists"]) > 1:
                 for j in range(len(track_info[i]["artists"]) - 1):
                     feats.append(track_info[i]["artists"][j + 1]["name"])
@@ -109,8 +91,17 @@ def app():
 
             df_playlist = pd.concat([df_playlist, pd.DataFrame([data])], ignore_index=True)
 
+        # Add additional features to the data frame
+        tracks_id = list(df_playlist["track_id"])
+        tracks_id = ",".join(tracks_id)
+        df_features = get_features(token, tracks_id)["audio_features"]
+        df_features = pd.DataFrame(df_features)
+        df_features = df_features[["acousticness", "danceability", "energy", "instrumentalness", "liveness", "loudness", "valence", "mode", "tempo", "id"]]
+        result_df = pd.merge(df_playlist, df_features, left_on='track_id', right_on='id')
+        result_df = result_df.drop('id', axis=1)
+
         # Display the data frame
-        st.write(df_playlist)
+        st.write(result_df)
 
 if __name__ == "__main__":
     app()
