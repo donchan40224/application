@@ -1,6 +1,7 @@
 from requests import post,get
 import json
 import base64
+import pandas as pd
 
 
 CLIENT_ID = '46bef0c0bbf74f05b2ab82e420cafd34'
@@ -36,33 +37,45 @@ def get_id(token, track_name, artist_name):
     print(json_result)  # Add this line to print the API response
     return json_result
 
-import streamlit as st
-import pandas as pd
+def get_track_info(token, track_name, artist_name):
+    headers = get_auth_header(token)
+    url = 'https://api.spotify.com/v1/search'
+    query = f'?q=track:{track_name}%20artist:{artist_name}&type=track'
+    query_url = url + query
+    result = get(query_url, headers=headers)
+    json_result = json.loads(result.content)
+    return json_result
 
 def app():
     st.title("Spotify Track Information")
 
+    # Get user input
     track_name = st.text_input("Enter the track name")
     artist_name = st.text_input("Enter the artist name")
 
-    if track_name and artist_name:
+    if st.button("Get Track Information"):
+        # Get the token
         token = get_token()
-        result = get_id(token, track_name, artist_name)
 
+        # Get the track information
+        result = get_track_info(token, track_name, artist_name)
+
+        # Extract the track information
         track_data = []
         try:
             for item in result["tracks"]["items"]:
                 track_info = {
-                    "track_name": item["track"]["name"],
-                    "track_popularity": item["track"]["popularity"],
-                    "duration_ms": item["track"]["duration_ms"],
-                    "artist_name": item["track"]["artists"][0]["name"],
+                    "track_popularity": item["popularity"],
+                    "duration_ms": item["duration_ms"],
+                    "artist_name": ", ".join([artist["name"] for artist in item["artists"]]),
+                    "artist_genres": ", ".join(item["artists"][0]["genres"]),
                     "artist_popularity": item["artists"][0]["popularity"],
-                    "explicit": item["track"]["explicit"],
-                    "album": item["track"]["album"]["name"],
-                    "type": item["track"]["album"]["album_type"],
-                    "release_date": item["track"]["album"]["release_date"],
-                    "track_id": item["track"]["id"]
+                    "feats": ", ".join([artist["name"] for artist in item["artists"][1:]]),
+                    "explicit": item["explicit"],
+                    "album": item["album"]["name"],
+                    "type": item["type"],
+                    "release_date": item["album"]["release_date"],
+                    "track_id": item["id"]
                 }
                 track_data.append(track_info)
         except (KeyError, TypeError):
