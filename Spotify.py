@@ -33,7 +33,7 @@ def get_auth_header(token):
 def get_track_info(token, track_name, artist_name):
     headers = get_auth_header(token)
     url = 'https://api.spotify.com/v1/search'
-    query = f'?q=track:{track_name}%20artist:{artist_name}&type=track'
+    query = f'?q=track:{track_name.strip()}%20artist:{artist_name.strip()}&type=track'
     query_url = url + query
     result = get(query_url, headers=headers)
     json_result = json.loads(result.content)
@@ -50,8 +50,8 @@ def app():
     st.title("Spotify Track Information")
 
     # Get user input
-    track_name = st.text_input("Enter the track name")
-    artist_name = st.text_input("Enter the artist name")
+    track_name = st.text_input("Enter the track name").strip()
+    artist_name = st.text_input("Enter the artist name").strip()
 
     if st.button("Get Track Information"):
         # Get the track information
@@ -59,7 +59,7 @@ def app():
         track_info_json = get_track_info(token, track_name, artist_name)
 
         # Process the track information and create the data frame
-        columns = ["track_name", "track_popularity", "duration_ms", "artist_name","feats","album", "type", "release_date", "track_id", "artist_id"]
+        columns = ["track_name", "track_popularity", "duration_ms", "artist_name", "feats", "album", "type", "release_date", "track_id", "artist_id"]
         df_playlist = pd.DataFrame(columns=columns)
 
         track_info = track_info_json["tracks"]["items"]
@@ -102,9 +102,10 @@ def app():
         st.write(result_df)
 
         # Download CSV button
-        csv_data = result_df.to_csv(index=False)
+        csv_data = result_df.to_csv(index=False, encoding='utf-8')
         b64 = base64.b64encode(csv_data.encode()).decode()
-        href = f'<a href="data:file/csv;base64,{b64}" download="spotify_track_info.csv">Download CSV</a>'
+        file_name = f"{artist_name}_{track_name}.csv"
+        href = f'<a href="data:file/csv;base64,{b64}" download="{file_name}">Download CSV</a>'
         st.markdown(href, unsafe_allow_html=True)
 
 if __name__ == "__main__":
