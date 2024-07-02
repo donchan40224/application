@@ -1,5 +1,4 @@
 img2pdf==0.4.*
 streamlit
-base64
 requests
 json
