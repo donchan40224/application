@@ -57,7 +57,7 @@ def app():
         track_info_json = get_track_info(token, track_name, artist_name)
 
         # Process the track information and create the data frame
-        columns = ["track_name", "track_popularity", "duration_ms", "artist_name","artist_popularity", "feats","album", "type", "release_date", "track_id", "artist_id"]
+        columns = ["track_name", "track_popularity", "duration_ms", "artist_name","feats","album", "type", "release_date", "track_id", "artist_id"]
         df_playlist = pd.DataFrame(columns=columns)
 
         track_info = track_info_json["tracks"]["items"]
@@ -69,7 +69,6 @@ def app():
                 "track_popularity": track_info[i]["popularity"],
                 "artist_name": track_info[i]["artists"][0]["name"],
                 "duration_ms": track_info[i]["duration_ms"],
-                "artist_popularity": "",
                 "feats": "",
                 "album": track_info[i]["album"]["name"],
                 "type": track_info[i]["album"]["album_type"],
