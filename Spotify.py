@@ -5,6 +5,7 @@ import base64
 import pandas as pd
 import csv
 import io
+import matplotlib.pyplot as plt 
 
 CLIENT_ID = '46bef0c0bbf74f05b2ab82e420cafd34'
 CLIENT_SECRET = 'c775d3a026614d42953279c45ab5d711'
@@ -101,12 +102,14 @@ def app():
         # Display the data frame
         st.write(result_df)
 
-   # Download CSV button
-        csv_data = result_df.to_csv(index=False, encoding='utf-8-sig')
-        b64 = base64.b64encode(csv_data.encode()).decode()
-        file_name = f"{artist_name}_{track_name}.csv"
-        href = f'<a href="data:file/csv;base64,{b64}" download="{file_name}">Download CSV</a>'
-        st.markdown(href, unsafe_allow_html=True)
+       # Visualize the audio features
+        fig, ax = plt.subplots(figsize=(12, 6))
+        result_df.plot(kind='bar', x='track_name', y=['acousticness', 'danceability', 'energy', 'instrumentalness', 'liveness', 'loudness', 'valence', 'mode', 'tempo'], ax=ax)
+        ax.set_title(f'Audio Features for "{track_name}" by "{artist_name}"')
+        ax.set_xlabel('Track')
+        ax.set_ylabel('Value')
+        ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
+        st.pyplot(fig)
 
 if __name__ == "__main__":
     app()
