@@ -36,9 +36,10 @@ def get_id(token, track_name, artist_name):
     return json_result
 
 import streamlit as st
+import pandas as pd
 
 def app():
-    st.title("Spotify Track ID Finder")
+    st.title("Spotify Track Information")
 
     # Get user input
     track_name = st.text_input("Enter the track name")
@@ -49,22 +50,35 @@ def app():
         # Get the token
         token = get_token()
 
-        # Get the track ID(s)
+        # Get the track information
         result = get_id(token, track_name, artist_name)
 
-        # Extract the track IDs from the result
-        track_ids = []
+        # Extract the track information
+        track_data = []
         try:
             for item in result["tracks"]["items"]:
-                track_ids.append(item["id"])
+                track_info = {
+                    "track_name": item["name"],
+                    "track_popularity": item["popularity"],
+                    "duration_ms": item["duration_ms"],
+                    "artist_name": ", ".join([artist["name"] for artist in item["artists"]]),
+                    "artist_genres": ", ".join(item["artists"][0]["genres"]),
+                    "artist_popularity": item["artists"][0]["popularity"],
+                    "feats": ", ".join([artist["name"] for artist in item["artists"][1:]]),
+                    "explicit": item["explicit"],
+                    "album": item["album"]["name"],
+                    "type": item["type"],
+                    "release_date": item["album"]["release_date"],
+                    "track_id": item["id"]
+                }
+                track_data.append(track_info)
         except (KeyError, TypeError):
             st.write("No tracks found.")
 
-        # Display the track IDs
-        if track_ids:
-            st.write("Track IDs:")
-            for track_id in track_ids:
-                st.write(f"- {track_id}")
+        # Display the track information in a data frame
+        if track_data:
+            df = pd.DataFrame(track_data)
+            st.write(df)
         else:
             st.write("No tracks found.")
 
