@@ -42,35 +42,27 @@ import pandas as pd
 def app():
     st.title("Spotify Track Information")
 
-    # Get user input
     track_name = st.text_input("Enter the track name")
     artist_name = st.text_input("Enter the artist name")
 
-    # Check if both inputs are provided
     if track_name and artist_name:
-        # Get the token
         token = get_token()
-
-        # Get the track information
         result = get_id(token, track_name, artist_name)
 
-        # Extract the track information
         track_data = []
         try:
             for item in result["tracks"]["items"]:
                 track_info = {
-                    "track_name": item["name"],
-                    "track_popularity": item["popularity"],
-                    "duration_ms": item["duration_ms"],
-                    "artist_name": ", ".join([artist["name"] for artist in item["artists"]]),
-                    "artist_genres": ", ".join(item["artists"][0]["genres"]),
+                    "track_name": item["track"]["name"],
+                    "track_popularity": item["track"]["popularity"],
+                    "duration_ms": item["track"]["duration_ms"],
+                    "artist_name": item["track"]["artists"][0]["name"],
                     "artist_popularity": item["artists"][0]["popularity"],
-                    "feats": ", ".join([artist["name"] for artist in item["artists"][1:]]),
-                    "explicit": item["explicit"],
-                    "album": item["album"]["name"],
-                    "type": item["type"],
-                    "release_date": item["album"]["release_date"],
-                    "track_id": item["id"]
+                    "explicit": item["track"]["explicit"],
+                    "album": item["track"]["album"]["name"],
+                    "type": item["track"]["album"]["album_type"],
+                    "release_date": item["track"]["album"]["release_date"],
+                    "track_id": item["track"]["id"]
                 }
                 track_data.append(track_info)
         except (KeyError, TypeError):
