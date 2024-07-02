@@ -102,18 +102,6 @@ def app():
         # Display the data frame
         st.write(result_df)
 
-        # Create the interactive dashboard
-        st.subheader("Visualize Audio Features")
-        features_to_plot = st.multiselect("Select the audio features to visualize", ['acousticness', 'danceability', 'energy', 'instrumentalness', 'liveness', 'loudness', 'valence', 'mode', 'tempo'])
-
-        if features_to_plot:
-            fig, ax = plt.subplots(figsize=(12, 6))
-            result_df[features_to_plot].plot(kind='bar', x='track_name', ax=ax)
-            ax.set_title(f'Audio Features for "{track_name}" by "{artist_name}"')
-            ax.set_xlabel('Track')
-            ax.set_ylabel('Value')
-            ax.legend(loc='center left', bbox_to_anchor=(1, 0.5))
-            st.pyplot(fig)
 
 if __name__ == "__main__":
     app()
