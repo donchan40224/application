@@ -3,5 +3,3 @@ streamlit
 base64
 requests
 json
-numpy
-pandas
