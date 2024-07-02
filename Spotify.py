@@ -37,6 +37,20 @@ def get_track_info(token, track_name, artist_name):
     json_result = json.loads(result.content)
     return json_result
 
+def get_artist(token,artist_id):
+    url=f"https://api.spotify.com/v1/artists/{artist_id}"
+    headers = get_auth_header(token)
+    result = get(url,headers=headers)
+    json_result = json.loads(result.content)
+    return json_result
+
+def get_features(token,songs_id):
+    url=f"https://api.spotify.com/v1/audio-features?ids={songs_id}"
+    headers = get_auth_header(token)
+    result = get(url,headers=headers)
+    json_result = json.loads(result.content)
+    return json_result
+
 def app():
     st.title("Spotify Track Information")
 
