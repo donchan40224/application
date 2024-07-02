@@ -101,7 +101,7 @@ def app():
         # Display the data frame
         st.write(result_df)
 
-        # Download CSV button
+   # Download CSV button
         csv_data = result_df.to_csv(index=False, encoding='utf-8-sig')
         b64 = base64.b64encode(csv_data.encode()).decode()
         file_name = f"{artist_name}_{track_name}.csv"
