@@ -3,6 +3,8 @@ from requests import post, get
 import json
 import base64
 import pandas as pd
+import csv
+import io
 
 CLIENT_ID = '46bef0c0bbf74f05b2ab82e420cafd34'
 CLIENT_SECRET = 'c775d3a026614d42953279c45ab5d711'
@@ -98,6 +100,12 @@ def app():
 
         # Display the data frame
         st.write(result_df)
+
+        # Download CSV button
+        csv_data = result_df.to_csv(index=False)
+        b64 = base64.b64encode(csv_data.encode()).decode()
+        href = f'<a href="data:file/csv;base64,{b64}" download="spotify_track_info.csv">Download CSV</a>'
+        st.markdown(href, unsafe_allow_html=True)
 
 if __name__ == "__main__":
     app()
