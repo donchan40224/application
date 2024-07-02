@@ -1,8 +1,7 @@
 import base64
 from requests import post,get
 import json
-import numpy as np
-import pandas as pd
+
 
 CLIENT_ID = '46bef0c0bbf74f05b2ab82e420cafd34'
 CLIENT_SECRET = 'c775d3a026614d42953279c45ab5d711'
