@@ -14,8 +14,8 @@ max_results = st.number_input('Maximum Number of Results', min_value=1, max_valu
 exact_match = st.checkbox('Exact Match')
 
 # Spotify API credentials
-client_id = st.secrets["46bef0c0bbf74f05b2ab82e420cafd34"]
-client_secret = st.secrets["c775d3a026614d42953279c45ab5d711"]
+client_id = "46bef0c0bbf74f05b2ab82e420cafd34"
+client_secret = "c775d3a026614d42953279c45ab5d711"
 
 def get_spotify_info(track_name=None, artist_name=None, max_results=1000, exact_match=False):
     # Set up Spotify API credentials
